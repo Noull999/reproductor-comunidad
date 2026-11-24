@@ -8,7 +8,7 @@
    "descripcion": "Neo Y2K en un magenta eléctrico, con la estrella de cromo.",
    "tipo": "ajustes",
    "base": "neoy2k",
-   "fecha": ""
+   "fecha": "2026-11-24"
   },
   {
    "id": "liquido-atardecer",
@@ -17,7 +17,7 @@
    "descripcion": "Líquido en naranja de atardecer, más suave y más lento.",
    "tipo": "ajustes",
    "base": "liquido",
-   "fecha": ""
+   "fecha": "2026-11-24"
   },
   {
    "id": "ambiente-menta",
@@ -26,7 +26,7 @@
    "descripcion": "Ambiente en verde menta, con el fondo más desenfocado.",
    "tipo": "ajustes",
    "base": "ambiente",
-   "fecha": ""
+   "fecha": "2026-11-24"
   }
  ]
 }
