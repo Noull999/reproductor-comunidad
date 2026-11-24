@@ -82,6 +82,8 @@ def construir(raiz=RAIZ):
               .replace("__FILTROS__", filtros).replace("__CUENTA__", cuenta).replace("__VACIO__", html.escape(vacio))
               .replace("__GITHUB__", GITHUB).replace("__APP__", APP))
     (salida / "index.html").write_text(pagina, encoding="utf-8")
+    for extra in ("enviar.html", "admin.html"):   # las páginas de la subida directa (hablan con /api)
+        shutil.copy2(Path(__file__).with_name(extra), salida / extra)
     return len(catalogo)
 
 

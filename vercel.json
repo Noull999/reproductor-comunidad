@@ -1,5 +1,8 @@
 {
   "buildCommand": null,
   "outputDirectory": "sitio",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "functions": {
+    "api/**/*.py": { "includeFiles": "api/_lib/**", "maxDuration": 15 }
+  }
 }

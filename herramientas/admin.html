@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Revisión · Reproductor visual</title>
+<style>
+  :root { --fondo: #0b0809; --panel: rgba(255,255,255,.05); --texto: #f4eff0; --suave: #b0a3a6; --borde: rgba(255,255,255,.14); --acento: #ff3b4d; --ok: #4cd08a; --mal: #ff7b86; color-scheme: dark; }
+  @media (prefers-color-scheme: light) { :root { --fondo: #f7f2f2; --panel: rgba(0,0,0,.04); --texto: #1d1517; --suave: #66585c; --borde: rgba(0,0,0,.16); --ok: #14864f; --mal: #c0293a; color-scheme: light; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: inherit; } :focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
+  .caja { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  header { border-bottom: 1px solid var(--borde); } header .caja { display: flex; justify-content: space-between; align-items: center; height: 58px; } header a { text-decoration: none; font-weight: 700; }
+  h1 { font-size: 30px; margin: 30px 0 14px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .btn { padding: 9px 20px; border-radius: 999px; border: 1px solid var(--borde); background: transparent; color: var(--texto); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn[aria-pressed="true"] { background: var(--texto); color: var(--fondo); border-color: transparent; } .btn.ok { background: var(--ok); color: #fff; border-color: transparent; } .btn.mal { color: var(--mal); border-color: var(--mal); } .btn:hover { filter: brightness(1.12); } .btn[disabled] { opacity: .5; }
+  .item { display: grid; grid-template-columns: 300px 1fr; gap: 18px; border: 1px solid var(--borde); background: var(--panel); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
+  @media (max-width: 720px) { .item { grid-template-columns: 1fr; } }
+  .item img { width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--borde); }
+  .item h2 { margin: 0 0 2px; font-size: 20px; } .item p { margin: 6px 0; } .suave { color: var(--suave); font-size: 14px; }
+  .etiqueta { font: 12px ui-monospace, monospace; border: 1px solid var(--borde); border-radius: 999px; padding: 3px 10px; margin-right: 6px; display: inline-block; }
+  .acciones { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  #msg { padding: 14px 18px; border: 1px solid var(--borde); border-radius: 12px; color: var(--suave); } [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div class="caja"><a href="/">Reproductor visual · Comunidad</a><a href="/enviar.html">← Mis envíos</a></div></header>
+<main class="caja">
+  <h1>Panel de revisión</h1>
+  <div class="tabs" role="group" aria-label="Estado">
+    <button class="btn" type="button" data-e="pendiente" aria-pressed="true">Pendientes</button>
+    <button class="btn" type="button" data-e="aprobada" aria-pressed="false">Publicadas</button>
+  </div>
+  <div id="msg" hidden></div>
+  <div id="lista"></div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const ORIGENES = { propio: "propias", ia: "hechas con IA", libre: "de licencia libre" };
+let estado = "pendiente";
+function el(tag, clase, texto) { const e = document.createElement(tag); if (clase) e.className = clase; if (texto != null) e.textContent = texto; return e; }
+async function api(ruta, metodo = "GET", cuerpo) {
+  const r = await fetch(ruta, { method: metodo, headers: cuerpo ? { "Content-Type": "application/json" } : {}, body: cuerpo ? JSON.stringify(cuerpo) : undefined });
+  let d = {}; try { d = await r.json(); } catch (_) {} return { estado: r.status, datos: d };
+}
+function nota(t) { $("msg").textContent = t; $("msg").hidden = !t; }
+async function decidir(p, accion, motivo) {
+  const { datos } = await api("/api/admin/decidir", "POST", { id: p.id, accion, motivo });
+  if (!datos.ok) nota(datos.error || "No se pudo."); else cargar();
+}
+function boton(texto, clase, f) { const b = el("button", "btn " + clase, texto); b.type = "button"; b.addEventListener("click", f); return b; }
+async function cargar() {
+  const { estado: st, datos } = await api("/api/admin/pendientes?estado=" + estado), lista = $("lista"); lista.replaceChildren(); nota("");
+  if (st === 401 || st === 403) { nota("Esta página es solo para administración. Entra desde «Mis envíos» con la cuenta administradora."); return; }
+  const filas = datos.plantillas || [];
+  if (!filas.length) { nota(estado === "pendiente" ? "No hay nada esperando revisión." : "Todavía no hay plantillas publicadas."); return; }
+  for (const p of filas) {
+    const id = encodeURIComponent(p.id), art = el("article", "item"), img = el("img"); img.src = "/api/archivo?tipo=previa&id=" + id; img.alt = "Vista previa de " + p.nombre; img.loading = "lazy";
+    const d = el("div"); d.append(el("h2", "", p.nombre), el("div", "suave", `por ${p.usuario.nombre_visible} (@${p.usuario.login}) · ${new Date(p.creado * 1000).toLocaleString()}`), el("p", "", p.descripcion));
+    const tags = el("div"); tags.append(el("span", "etiqueta", p.tipo === "ajustes" ? "Ajustes · " + p.base : "Plantilla del Editor"));
+    tags.append(el("span", "etiqueta", p.imagenes_origen ? `Imágenes ${ORIGENES[p.imagenes_origen]}${p.imagenes_detalle ? ": " + p.imagenes_detalle : ""}` : "Sin imágenes")); d.append(tags);
+    const ac = el("div", "acciones"), bajar = el("a", "btn", "Descargar para probarla"); bajar.href = "/api/archivo?tipo=plantilla&id=" + id; ac.append(bajar);
+    if (estado === "pendiente") ac.append(boton("Aprobar", "ok", () => decidir(p, "aprobar")), boton("Rechazar", "mal", () => { const m = prompt("Motivo (lo verá la persona):", ""); if (m !== null) decidir(p, "rechazar", m); }));
+    else ac.append(boton("Retirar", "mal", () => { const m = prompt("Motivo del retiro:", ""); if (m !== null) decidir(p, "retirar", m); }));
+    ac.append(boton("Bloquear a esta persona", "mal", () => { if (confirm(`¿Bloquear a @${p.usuario.login}? No podrá entrar ni enviar, y esta plantilla se retira.`)) decidir(p, "bloquear", "Cuenta bloqueada"); }));
+    d.append(ac); art.append(img, d); lista.append(art);
+  }
+}
+for (const b of document.querySelectorAll(".tabs .btn")) b.addEventListener("click", () => { estado = b.dataset.e; document.querySelectorAll(".tabs .btn").forEach(x => x.setAttribute("aria-pressed", x === b)); cargar(); });
+cargar();
+</script>
+</body>
+</html>

@@ -25,6 +25,7 @@
   .marca { font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 10px; } .marca i { width: 10px; height: 10px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 12px var(--acento); }
   nav ul { display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; justify-content: flex-end; }
   nav a { padding: 7px 13px; border-radius: 999px; text-decoration: none; color: var(--suave); font-size: 14.5px; } nav a:hover { color: var(--texto); background: var(--panel); }
+  nav a.btn-nav { background: var(--acento); color: #fff; } nav a.btn-nav:hover { filter: brightness(1.12); background: var(--acento); }
   /* portada */
   .portada { padding: 70px 0 40px; background: radial-gradient(900px 480px at 12% -10%, rgba(255,59,77,.22), transparent 62%), radial-gradient(800px 460px at 100% 10%, rgba(122,140,255,.2), transparent 60%); }
   .portada .caja { display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
@@ -84,7 +85,7 @@
   <div class="caja">
     <a class="marca" href="#"><i aria-hidden="true"></i>Reproductor visual · Comunidad</a>
     <nav aria-label="Secciones"><ul>
-      <li><a href="#que-es">Qué es</a></li><li><a href="#plantillas">Plantillas</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#compartir">Compartir</a></li><li><a href="#preguntas">Preguntas</a></li>
+      <li><a href="#que-es">Qué es</a></li><li><a href="#plantillas">Plantillas</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#compartir">Compartir</a></li><li><a href="enviar.html" class="btn-nav">Enviar la tuya</a></li><li><a href="#preguntas">Preguntas</a></li>
     </ul></nav>
   </div>
 </header>
@@ -134,7 +135,7 @@
 
   <section id="plantillas" class="caja" aria-labelledby="t-com">
     <h2 id="t-com">Plantillas de la comunidad</h2>
-    <p class="sub">3 plantillas por ahora. Toca la imagen para verla grande; <b>Descargar</b> te da el archivo para importarlo en la app.</p>
+    <p class="sub"><span class="cuenta">3 plantillas</span> por ahora. Toca la imagen para verla grande; <b>Descargar</b> te da el archivo para importarlo en la app.</p>
     <div class="herramientas">
       <input id="buscar" type="search" placeholder="Buscar por nombre, autor o estilo…" aria-label="Buscar plantillas" autocomplete="off">
       <div class="chips" role="group" aria-label="Filtrar por plantilla" id="filtros">
@@ -175,38 +176,38 @@
 
   <section id="compartir" class="caja" aria-labelledby="t-cmp">
     <h2 id="t-cmp">Cómo compartir la tuya</h2>
-    <p class="sub">Hoy se hace con una cuenta de GitHub (gratis). Una subida más simple, directo en esta página, está en camino.</p>
+    <p class="sub">Entra con tu cuenta de GitHub (gratis), sube tu archivo y su captura aquí mismo. Una persona lo revisa antes de publicarlo.</p>
     <div class="tres">
       <div class="nota"><span class="num">1</span><h3>Exporta</h3><p>En la app: <b>Exportar</b> (plantillas del Editor) o <b>Exportar mis ajustes</b> (las incluidas).</p></div>
-      <div class="nota"><span class="num">2</span><h3>Agrega tres archivos</h3><p>Tu archivo, una captura de la vista previa y una entrada con nombre y descripción. Si trae imágenes, dices de dónde vienen.</p></div>
-      <div class="nota"><span class="num">3</span><h3>Abre un pull request</h3><p>Un revisor automático lo comprueba y después lo apruebo. Tu usuario de GitHub queda como autor verificado.</p></div>
+      <div class="nota"><span class="num">2</span><h3>Súbela aquí</h3><p>Entra con GitHub, elige tu archivo y una captura, ponle nombre y descripción. Si trae imágenes, dices de dónde vienen.</p></div>
+      <div class="nota"><span class="num">3</span><h3>Espera la revisión</h3><p>El sistema lo comprueba al instante y después una persona lo aprueba. Tu usuario de GitHub queda como autor verificado y el nombre que muestres lo eliges tú.</p></div>
     </div>
-    <p style="margin-top:18px"><a class="btn primario" href="https://github.com/Noull999/reproductor-comunidad/blob/main/CONTRIBUIR.md">Leer la guía completa</a></p>
+    <p style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn primario" href="enviar.html">Enviar mi plantilla</a><a class="btn" href="https://github.com/Noull999/reproductor-comunidad/blob/main/CONTRIBUIR.md">Hacerlo por GitHub (pull request)</a></p>
   </section>
 
   <section id="preguntas" class="caja" aria-labelledby="t-pre">
     <h2 id="t-pre">Preguntas frecuentes</h2>
     <details><summary>¿Es seguro instalar una plantilla de otra persona?</summary><p>Una plantilla son solo datos e imágenes, no programas: no puede ejecutar nada. La app la revisa campo por campo antes de usarla, vuelve a guardar las imágenes (nunca las copia tal cual) y rechaza archivos con contenido raro o demasiado grande. Además, cada envío se revisa a mano antes de publicarse.</p></details>
     <details><summary>¿Qué lleva una plantilla? ¿Lleva mis cuentas?</summary><p>No. Lleva el estilo elegido, el color, la velocidad y, si las pusiste, tus imágenes. Nunca tus cuentas de Spotify o SoundCloud, ni nombres de canciones.</p></details>
-    <details><summary>¿Cómo sé quién la hizo?</summary><p>Cada tarjeta muestra el nombre del autor y, junto a él, su usuario de GitHub (@usuario), que es el de la cuenta que la envió y no se puede falsificar.</p></details>
+    <details><summary>¿Cómo sé quién la hizo?</summary><p>Cada tarjeta muestra el nombre del autor y, junto a él, su usuario de GitHub (@usuario), que es el de la cuenta que la envió y no se puede falsificar. El nombre puede cambiarlo cada persona; el usuario, no.</p></details>
     <details><summary>¿De dónde vienen los fondos e imágenes?</summary><p>Quien envía una plantilla con imágenes debe declarar su origen: <b>propias</b>, <b>hechas con IA</b> (y con qué herramienta) o de <b>licencia libre</b> (con la fuente). Se muestra en la tarjeta. Si alguien reclama derechos sobre una imagen, la plantilla se retira.</p></details>
-    <details><summary>¿Necesito una cuenta para instalar?</summary><p>No. Solo para compartir (hoy, una cuenta de GitHub).</p></details>
+    <details><summary>¿Necesito una cuenta para instalar?</summary><p>No. Solo para compartir (una cuenta de GitHub, gratis).</p></details>
     <details><summary>¿La app es gratis? ¿Funciona en Mac o Linux?</summary><p>El código es abierto (licencia MIT) y se puede usar gratis. Por ahora solo funciona en Windows 10/11.</p></details>
   </section>
 </main>
 
 <footer>
   <div class="caja">
-    <span>3 plantillas en la comunidad</span>
+    <span><span class="cuenta">3 plantillas</span> en la comunidad</span>
     <a href="https://github.com/Noull999/reproductor-comunidad">Repositorio de la comunidad</a>
     <a href="https://github.com/Noull999/reproductor-visual">La app</a>
-    <a href="https://github.com/Noull999/reproductor-comunidad/blob/main/CONTRIBUIR.md">Compartir la tuya</a>
+    <a href="enviar.html">Compartir la tuya</a>
   </div>
 </footer>
 
 <dialog id="visor" aria-label="Vista ampliada"><form method="dialog"><button>Cerrar</button></form><img id="visor-img" alt=""><p id="visor-txt"></p></dialog>
 <script>
-const tarjetas = [...document.querySelectorAll(".tarjeta")], vacio = document.getElementById("vacio");
+let tarjetas = [...document.querySelectorAll(".tarjeta")]; const vacio = document.getElementById("vacio");
 let base = "";
 function filtrar() {
   const q = document.getElementById("buscar").value.trim().toLowerCase();
@@ -226,6 +227,30 @@ for (const f of document.querySelectorAll(".foto")) f.addEventListener("click", 
 });
 visor.addEventListener("click", (e) => { if (e.target === visor) visor.close(); });
 filtrar();
+
+// Plantillas enviadas directo en la web: ya aprobadas, vienen de /api/catalogo. Todo se pone con textContent, nunca como HTML.
+const ORIGENES = { propio: "propias", ia: "hechas con IA", libre: "de licencia libre" };
+function el(tag, clase, texto) { const e = document.createElement(tag); if (clase) e.className = clase; if (texto != null) e.textContent = texto; return e; }
+function tarjetaWeb(p) {
+  const id = encodeURIComponent(p.id), li = el("li"), art = el("article", "tarjeta");
+  art.dataset.base = p.base; art.dataset.texto = `${p.nombre} ${p.autor} ${p.github} ${p.descripcion} ${p.base}`.toLowerCase();
+  const foto = el("button", "foto"); foto.type = "button"; foto.dataset.titulo = p.nombre; foto.setAttribute("aria-label", "Ver grande la vista previa de " + p.nombre);
+  const img = el("img"); img.src = "/api/archivo?tipo=previa&id=" + id; img.alt = "Vista previa de " + p.nombre; img.loading = "lazy"; img.width = 1000; img.height = 563; foto.append(img);
+  foto.addEventListener("click", () => { document.getElementById("visor-img").src = img.src; document.getElementById("visor-txt").textContent = p.nombre; visor.showModal(); });
+  const autor = el("span", "autor", "por " + p.autor + " · "), gh = el("a", "", "@" + p.github); gh.href = "https://github.com/" + encodeURIComponent(p.github); gh.rel = "noopener"; autor.append(gh);
+  const pie = el("div", "pie"); pie.append(el("span", "etiqueta", p.tipo === "ajustes" ? "Ajustes · " + p.base : "Plantilla del Editor"));
+  if (p.imagenes && ORIGENES[p.imagenes.origen]) { const t = el("span", "etiqueta", "Imágenes " + ORIGENES[p.imagenes.origen]); t.title = p.imagenes.detalle || ""; pie.append(t); }
+  const d = el("a", "descargar", "Descargar"); d.href = "/api/archivo?tipo=plantilla&id=" + id; d.download = p.id + ".plantilla"; pie.append(d);
+  const cuerpo = el("div", "cuerpo"); cuerpo.append(el("h3", "", p.nombre), autor, el("p", "", p.descripcion), pie);
+  art.append(foto, cuerpo); li.append(art); return li;
+}
+fetch("/api/catalogo").then(r => r.ok ? r.json() : null).then(c => {
+  if (!c || !Array.isArray(c.plantillas) || !c.plantillas.length) return;
+  const rejilla = document.getElementById("rejilla");
+  for (const p of c.plantillas) { const li = tarjetaWeb(p); rejilla.append(li); tarjetas.push(li.firstChild); }
+  const n = tarjetas.length; document.querySelectorAll(".cuenta").forEach(x => x.textContent = n + (n === 1 ? " plantilla" : " plantillas"));
+  filtrar();
+}).catch(() => {});
 </script>
 </body>
 </html>

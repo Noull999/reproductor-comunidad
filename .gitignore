@@ -1,0 +1,9 @@
+
+# datos privados: nunca al repositorio
+ID de cliente.txt
+*.secret
+.env*
+.vercel
+
+.vercel
+.env*

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enviar mi plantilla · Reproductor visual</title>
+<meta name="description" content="Comparte tu plantilla con la comunidad: entra con GitHub, sube tu archivo y su captura, y una persona lo revisa antes de publicarlo.">
+<style>
+  :root { --fondo: #0b0809; --panel: rgba(255,255,255,.05); --texto: #f4eff0; --suave: #b0a3a6; --borde: rgba(255,255,255,.14); --acento: #ff3b4d; --ok: #4cd08a; --mal: #ff7b86; color-scheme: dark; }
+  @media (prefers-color-scheme: light) { :root { --fondo: #f7f2f2; --panel: rgba(0,0,0,.04); --texto: #1d1517; --suave: #66585c; --borde: rgba(0,0,0,.16); --ok: #14864f; --mal: #c0293a; color-scheme: light; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: inherit; } :focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
+  .caja { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  header { border-bottom: 1px solid var(--borde); } header .caja { display: flex; justify-content: space-between; align-items: center; height: 58px; }
+  header a { text-decoration: none; font-weight: 700; } header a.vol { font-weight: 400; color: var(--suave); }
+  h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; margin: 38px 0 8px; letter-spacing: -.02em; }
+  h2 { font-size: 20px; margin: 0 0 10px; }
+  .sub { color: var(--suave); margin: 0 0 24px; }
+  .panel { border: 1px solid var(--borde); background: var(--panel); border-radius: 18px; padding: 20px 22px; margin-bottom: 18px; }
+  label { display: block; font-weight: 600; margin: 14px 0 4px; } .ayuda { color: var(--suave); font-size: 14px; margin: 0 0 6px; font-weight: 400; }
+  input[type=text], textarea, select { width: 100%; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto); font: inherit; }
+  textarea { min-height: 84px; resize: vertical; }
+  input[type=file] { width: 100%; padding: 10px; border: 1px dashed var(--borde); border-radius: 12px; background: var(--fondo); color: var(--suave); }
+  .btn { display: inline-block; padding: 11px 24px; border-radius: 999px; border: 1px solid var(--borde); background: transparent; color: var(--texto); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .btn.primario { background: var(--acento); border-color: transparent; color: #fff; } .btn:hover { filter: brightness(1.12); } .btn[disabled] { opacity: .5; cursor: wait; }
+  .yo { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; } .yo img { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--borde); }
+  .yo .quien { flex: 1; min-width: 180px; } .yo small { color: var(--suave); display: block; }
+  .fila { display: flex; gap: 8px; } .fila input { flex: 1; }
+  #previa-vista { max-width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid var(--borde); display: block; }
+  .msg { padding: 12px 16px; border-radius: 12px; margin: 14px 0; border: 1px solid var(--borde); } .msg.ok { border-color: var(--ok); color: var(--ok); } .msg.mal { border-color: var(--mal); color: var(--mal); } .msg ul { margin: 6px 0 0; padding-left: 20px; }
+  .mis { list-style: none; padding: 0; margin: 0; } .mis li { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--borde); flex-wrap: wrap; } .mis li:first-child { border-top: 0; }
+  .mis .t { flex: 1; min-width: 160px; } .mis small { color: var(--suave); display: block; }
+  .estado { font: 12px ui-monospace, monospace; border: 1px solid var(--borde); border-radius: 999px; padding: 3px 10px; } .estado.aprobada { color: var(--ok); border-color: var(--ok); } .estado.rechazada { color: var(--mal); border-color: var(--mal); }
+  .reglas { color: var(--suave); font-size: 14.5px; padding-left: 20px; } .reglas li { margin-bottom: 4px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header><div class="caja"><a href="/">Reproductor visual · Comunidad</a><a class="vol" href="/#plantillas">← Volver a la galería</a></div></header>
+<main class="caja">
+  <h1>Enviar mi plantilla</h1>
+  <p class="sub">Entra con GitHub, sube tu archivo y una captura. Una persona lo revisa antes de publicarlo.</p>
+  <div id="aviso" class="msg mal" role="alert" hidden></div>
+
+  <section id="entrar" class="panel" hidden>
+    <h2>Primero, entra con GitHub</h2>
+    <p class="ayuda">Así tu plantilla queda ligada a tu cuenta (autor verificado). Solo leemos tu nombre de usuario y tu foto; no pedimos permisos sobre tus repositorios y no necesitas escribir ninguna contraseña aquí.</p>
+    <a class="btn primario" href="/api/auth/login?volver=/enviar.html">Entrar con GitHub</a>
+  </section>
+
+  <div id="dentro" hidden>
+    <section class="panel">
+      <div class="yo">
+        <img id="avatar" alt="" width="44" height="44" hidden>
+        <div class="quien"><b id="nombre-visible"></b><small>Usuario de GitHub: <span id="login"></span></small></div>
+        <a id="ir-admin" class="btn" href="/admin.html" hidden>Panel de revisión</a>
+        <button class="btn" id="salir" type="button">Salir</button>
+      </div>
+      <label for="nuevo-nombre">Nombre que se muestra como autor</label>
+      <p class="ayuda">Puedes cambiarlo cuando quieras (2 a 30 caracteres). Tu usuario de GitHub se muestra siempre al lado y no cambia.</p>
+      <div class="fila"><input id="nuevo-nombre" type="text" maxlength="30" autocomplete="off"><button class="btn" id="guardar-nombre" type="button">Guardar</button></div>
+    </section>
+
+    <form id="form" class="panel" novalidate>
+      <h2>Tu plantilla</h2>
+      <label for="nombre">Nombre <span class="ayuda">(máx. 40)</span></label>
+      <input id="nombre" type="text" maxlength="40" required autocomplete="off">
+      <label for="descripcion">Descripción <span class="ayuda">(máx. 200)</span></label>
+      <textarea id="descripcion" maxlength="200" required></textarea>
+      <label for="archivo">Archivo <code>.plantilla</code></label>
+      <p class="ayuda">Lo exportas desde la app: <b>Exportar</b> (Editor) o <b>Exportar mis ajustes</b>. Máx. 2,6 MB.</p>
+      <input id="archivo" type="file" accept=".plantilla" required>
+      <label for="captura">Captura de cómo se ve</label>
+      <p class="ayuda">Cualquier imagen en proporción 16:9, mejor desde la vista de demostración (sin música real). La convertimos a WebP sola.</p>
+      <input id="captura" type="file" accept="image/*" required>
+      <img id="previa-vista" alt="Vista previa de tu captura" hidden>
+      <label for="origen">¿Tu archivo trae imágenes (fondo, cuerpo…)?</label>
+      <select id="origen">
+        <option value="">No trae imágenes</option>
+        <option value="propio">Sí, son mías (las hice o las fotografié yo)</option>
+        <option value="ia">Sí, las hice con inteligencia artificial</option>
+        <option value="libre">Sí, son de licencia libre (de otra fuente)</option>
+      </select>
+      <div id="detalle-caja" hidden>
+        <label for="detalle">¿Con qué herramienta, o de dónde y con qué licencia?</label>
+        <input id="detalle" type="text" maxlength="120" autocomplete="off">
+      </div>
+      <p class="ayuda" style="margin-top:12px">Al enviarla confirmas que tienes derecho a compartir todo lo que trae el archivo. No subas imágenes ni skins de otras personas o marcas sin permiso: se retiran si alguien lo reclama.</p>
+      <div id="resultado" role="status" hidden></div>
+      <button class="btn primario" id="enviar" type="submit">Enviar a revisión</button>
+    </form>
+
+    <section class="panel">
+      <h2>Mis envíos</h2>
+      <ul class="mis" id="mis"><li><span class="ayuda">Cargando…</span></li></ul>
+    </section>
+
+    <ul class="reglas">
+      <li>Máximo 5 plantillas esperando revisión a la vez y 10 envíos por día.</li>
+      <li>Hace falta una cuenta de GitHub con al menos 7 días de antigüedad.</li>
+      <li>Nada de lo que subes se ejecuta: el archivo se revisa entero y las imágenes se vuelven a guardar.</li>
+    </ul>
+  </div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const MAX_ARCHIVO = 2.6 * 1024 * 1024, MAX_PREVIA = 600 * 1024;
+function el(tag, clase, texto) { const e = document.createElement(tag); if (clase) e.className = clase; if (texto != null) e.textContent = texto; return e; }
+async function api(ruta, metodo = "GET", cuerpo) {
+  const r = await fetch(ruta, { method: metodo, headers: cuerpo ? { "Content-Type": "application/json" } : {}, body: cuerpo ? JSON.stringify(cuerpo) : undefined });
+  let d = null; try { d = await r.json(); } catch (_) {}
+  return { estado: r.status, datos: d || {} };
+}
+function mostrarAviso(texto) { $("aviso").textContent = texto; $("aviso").hidden = !texto; }
+function resultado(clase, titulo, lista) {
+  const r = $("resultado"); r.className = "msg " + clase; r.replaceChildren(el("b", "", titulo));
+  if (lista && lista.length) { const ul = el("ul"); lista.forEach(x => ul.append(el("li", "", x))); r.append(ul); } r.hidden = false;
+}
+
+const ERRORES = { login: "No se pudo entrar con GitHub. Inténtalo de nuevo.", red: "GitHub no respondió. Inténtalo en un momento.", bloqueado: "Esta cuenta no puede enviar plantillas." };
+const err = new URLSearchParams(location.search).get("error");
+if (err) { mostrarAviso(ERRORES[err] || "Algo salió mal."); history.replaceState(null, "", location.pathname); }
+
+async function cargarMis() {
+  const { datos } = await api("/api/mis"), ul = $("mis"); ul.replaceChildren();
+  const lista = datos.plantillas || [];
+  if (!lista.length) { const li = el("li"); li.append(el("span", "ayuda", "Todavía no has enviado ninguna.")); ul.append(li); return; }
+  for (const p of lista) {
+    const li = el("li"), t = el("div", "t"); t.append(el("b", "", p.nombre));
+    t.append(el("small", "", p.estado === "rechazada" && p.motivo ? "Motivo: " + p.motivo : p.estado === "pendiente" ? "Esperando revisión" : "Publicada en la galería"));
+    const est = el("span", "estado " + p.estado, p.estado); const b = el("button", "btn", "Borrar"); b.type = "button";
+    b.addEventListener("click", async () => { if (confirm("¿Borrar «" + p.nombre + "»? No se puede deshacer.")) { await api("/api/mis?id=" + encodeURIComponent(p.id), "DELETE"); cargarMis(); } });
+    li.append(t, est, b); ul.append(li);
+  }
+}
+
+async function iniciar() {
+  const { estado, datos } = await api("/api/yo");
+  if (estado !== 200) { $("entrar").hidden = false; if (estado === 503) mostrarAviso("La entrada con GitHub todavía no está lista. Vuelve en un rato."); return; }
+  $("dentro").hidden = false;
+  $("nombre-visible").textContent = datos.nombre_visible; $("login").textContent = "@" + datos.login; $("nuevo-nombre").value = datos.nombre_visible;
+  if (datos.avatar) { $("avatar").src = datos.avatar; $("avatar").hidden = false; }
+  $("ir-admin").hidden = !datos.admin;
+  cargarMis();
+}
+$("salir").addEventListener("click", async () => { await api("/api/auth/salir", "POST"); location.reload(); });
+$("guardar-nombre").addEventListener("click", async () => {
+  const { estado, datos } = await api("/api/yo", "POST", { nombre_visible: $("nuevo-nombre").value });
+  if (estado === 200) { mostrarAviso(""); $("nombre-visible").textContent = datos.nombre_visible; } else mostrarAviso(datos.error || "No se pudo guardar el nombre.");
+});
+$("origen").addEventListener("change", () => { $("detalle-caja").hidden = !$("origen").value || $("origen").value === "propio"; });
+
+// La captura se convierte a WebP 1280×720 (recortando al centro si no es 16:9) hasta que pese menos de 600 KB.
+async function aWebp(archivo) {
+  const bmp = await createImageBitmap(archivo), c = document.createElement("canvas"); c.width = 1280; c.height = 720;
+  const x = c.getContext("2d"), esc = Math.max(c.width / bmp.width, c.height / bmp.height), w = bmp.width * esc, h = bmp.height * esc;
+  x.drawImage(bmp, (c.width - w) / 2, (c.height - h) / 2, w, h);
+  for (let q = 0.9; q >= 0.3; q -= 0.1) {
+    const blob = await new Promise(r => c.toBlob(r, "image/webp", q));
+    if (blob && blob.type === "image/webp" && blob.size <= MAX_PREVIA) return blob;
+  }
+  throw new Error("La captura pesa demasiado incluso comprimida.");
+}
+const aBase64 = (blob) => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(blob); });
+let previaBlob = null;
+$("captura").addEventListener("change", async () => {
+  previaBlob = null; $("previa-vista").hidden = true;
+  const f = $("captura").files[0]; if (!f) return;
+  try { previaBlob = await aWebp(f); $("previa-vista").src = URL.createObjectURL(previaBlob); $("previa-vista").hidden = false; }
+  catch (e) { resultado("mal", e.message || "No se pudo leer la imagen."); }
+});
+
+$("form").addEventListener("submit", async (ev) => {
+  ev.preventDefault(); $("resultado").hidden = true;
+  const arch = $("archivo").files[0], problemas = [];
+  if (!$("nombre").value.trim()) problemas.push("Falta el nombre.");
+  if (!$("descripcion").value.trim()) problemas.push("Falta la descripción.");
+  if (!arch) problemas.push("Falta el archivo .plantilla."); else if (arch.size > MAX_ARCHIVO) problemas.push("El archivo pesa más de 2,6 MB.");
+  if (!previaBlob) problemas.push("Falta la captura.");
+  const origen = $("origen").value;
+  if (origen && origen !== "propio" && !$("detalle").value.trim()) problemas.push("Di con qué herramienta o de dónde y con qué licencia son las imágenes.");
+  if (problemas.length) return resultado("mal", "Revisa esto antes de enviar:", problemas);
+  $("enviar").disabled = true;
+  try {
+    const cuerpo = { nombre: $("nombre").value, descripcion: $("descripcion").value, plantilla_b64: await aBase64(arch), previa_b64: await aBase64(previaBlob) };
+    if (origen) cuerpo.imagenes = { origen, detalle: $("detalle").value };
+    const { estado, datos } = await api("/api/enviar", "POST", cuerpo);
+    if (estado === 201) { resultado("ok", "¡Recibida! Quedó en revisión; cuando se apruebe aparecerá en la galería."); $("form").reset(); $("previa-vista").hidden = true; previaBlob = null; $("detalle-caja").hidden = true; cargarMis(); }
+    else if (estado === 401) { resultado("mal", "Tu sesión venció. Recarga la página y vuelve a entrar."); }
+    else resultado("mal", datos.error || "No se pudo enviar.", datos.errores);
+  } catch (e) { resultado("mal", "No se pudo enviar. Revisa tu conexión."); }
+  $("enviar").disabled = false;
+});
+iniciar();
+</script>
+</body>
+</html>
