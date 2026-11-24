@@ -13,7 +13,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 GITHUB = "https://github.com/Noull999/reproductor-comunidad"
 APP = "https://github.com/Noull999/reproductor-visual"
 NOMBRES = {"liquido": "Líquido", "headspace": "Headspace", "dosmil": "2000s", "ambiente": "Ambiente", "pixel": "Pixel", "neoy2k": "Neo Y2K",
-           "psicodelico": "Psicodélico", "dreamcore": "Dreamcore", "anime": "Skin Player"}
+           "psicodelico": "Psicodélico", "dreamcore": "Dreamcore", "anime": "Winamp"}
 
 PLANTILLA = """<!DOCTYPE html>
 <html lang="es">
