@@ -232,3 +232,18 @@ def test_la_copia_de_los_revisores_es_igual_a_la_de_la_app():
     app = Path(os.environ.get("APP_REPRODUCTOR", RAIZ.parent / "visualizador"))
     for f in ("plantillas.py", "ajustes.py", "web/esquema.js"):
         assert (RAIZ / "api" / "_lib" / "app" / f).read_bytes() == (app / f).read_bytes(), f"{f} cambió en la app: corre herramientas/sincronizar_app.py"
+
+
+def test_cada_archivo_de_api_encuentra_su_carpeta__lib():
+    """Vercel importa cada archivo de api/ suelto: la ruta que añade al sys.path tiene que llegar a api/_lib."""
+    import re
+    archivos = [f for f in (RAIZ / "api").rglob("*.py") if "_lib" not in f.parts]
+    assert len(archivos) == len(servicio.RUTAS)
+    for f in archivos:
+        saltos = len(re.search(r"resolve\(\)((?:\.parent)+) / \"_lib\"", f.read_text(encoding="utf-8")).group(1)) // len(".parent")
+        destino = f.resolve()
+        for _ in range(saltos):
+            destino = destino.parent
+        assert (destino / "_lib" / "puente.py").exists(), f
+        assert "class handler(BaseHTTPRequestHandler)" in f.read_text(encoding="utf-8")
+        assert f'puente.atender("{f.relative_to(RAIZ / "api").with_suffix("").as_posix()}")' in f.read_text(encoding="utf-8")
