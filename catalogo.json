@@ -1,0 +1,32 @@
+{
+ "version": 1,
+ "plantillas": [
+  {
+   "id": "neoy2k-magenta",
+   "nombre": "Neo Y2K magenta",
+   "autor": "Noull999",
+   "descripcion": "Neo Y2K en un magenta eléctrico, con la estrella de cromo.",
+   "tipo": "ajustes",
+   "base": "neoy2k",
+   "fecha": ""
+  },
+  {
+   "id": "liquido-atardecer",
+   "nombre": "Líquido atardecer",
+   "autor": "Noull999",
+   "descripcion": "Líquido en naranja de atardecer, más suave y más lento.",
+   "tipo": "ajustes",
+   "base": "liquido",
+   "fecha": ""
+  },
+  {
+   "id": "ambiente-menta",
+   "nombre": "Ambiente menta",
+   "autor": "Noull999",
+   "descripcion": "Ambiente en verde menta, con el fondo más desenfocado.",
+   "tipo": "ajustes",
+   "base": "ambiente",
+   "fecha": ""
+  }
+ ]
+}
