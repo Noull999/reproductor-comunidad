@@ -1,10 +1,9 @@
-"""Adaptador entre las funciones de Vercel (http.server) y servicio.py. Cada archivo de api/ hace `handler = vercel.handler("<ruta>")`."""
+"""Adaptador entre las funciones de Vercel (http.server) y servicio.py. Cada archivo de api/ declara su `class handler` y le asigna `vercel.atender("<ruta>")`."""
 import json
 import os
 import time
 import urllib.request
 from http.cookies import SimpleCookie
-from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qsl, urlsplit
 
 import servicio
@@ -42,37 +41,32 @@ def _almacen_unico():
     return _almacen
 
 
-def handler(ruta):
-    class H(BaseHTTPRequestHandler):
-        def _atender(self):
-            partes = urlsplit(self.path)
-            n = int(self.headers.get("Content-Length") or 0)
-            if n > servicio.MAX_CUERPO:
-                cuerpo = b"x" * (servicio.MAX_CUERPO + 1)   # que servicio lo rechace con su mensaje, sin leer todo
-            else:
-                cuerpo = self.rfile.read(n) if n else b""
-            cookies = SimpleCookie(self.headers.get("Cookie", ""))
-            req = servicio.Peticion(self.command, dict(parse_qsl(partes.query)), cuerpo, {k: m.value for k, m in cookies.items()}, self.headers.get("Origin"))
-            try:
-                ctx = servicio.Contexto(servicio.Config.desde_entorno(), _almacen_unico(), Http(), time.time)
-                r = servicio.atender(ruta, req, ctx)
-            except Exception:   # noqa: BLE001 — p. ej. sin base de datos: respuesta genérica, detalle al registro
-                import traceback
-                traceback.print_exc()
-                r = servicio._error(503, "El servicio no está disponible ahora.")
-            self.send_response(r.estado)
-            self.send_header("Content-Type", r.tipo)
-            self.send_header("Content-Length", str(len(r.cuerpo)))
-            for k, v in r.cabeceras:
-                self.send_header(k, v)
-            for c in r.cookies:
-                self.send_header("Set-Cookie", c)
-            self.end_headers()
-            self.wfile.write(r.cuerpo)
-
-        do_GET = do_POST = do_DELETE = _atender
-
-        def log_message(self, *a):
-            pass
-
-    return H
+def atender(ruta):
+    """El método que cada archivo de api/ asigna a do_GET/do_POST/do_DELETE de su `class handler(BaseHTTPRequestHandler)`
+    (Vercel exige esa declaración literal en cada archivo para reconocer la función)."""
+    def metodo(self):
+        partes = urlsplit(self.path)
+        n = int(self.headers.get("Content-Length") or 0)
+        if n > servicio.MAX_CUERPO:
+            cuerpo = b"x" * (servicio.MAX_CUERPO + 1)   # que servicio lo rechace con su mensaje, sin leer todo
+        else:
+            cuerpo = self.rfile.read(n) if n else b""
+        cookies = SimpleCookie(self.headers.get("Cookie", ""))
+        req = servicio.Peticion(self.command, dict(parse_qsl(partes.query)), cuerpo, {k: m.value for k, m in cookies.items()}, self.headers.get("Origin"))
+        try:
+            ctx = servicio.Contexto(servicio.Config.desde_entorno(), _almacen_unico(), Http(), time.time)
+            r = servicio.atender(ruta, req, ctx)
+        except Exception:   # noqa: BLE001 — p. ej. sin base de datos: respuesta genérica, detalle al registro
+            import traceback
+            traceback.print_exc()
+            r = servicio._error(503, "El servicio no está disponible ahora.")
+        self.send_response(r.estado)
+        self.send_header("Content-Type", r.tipo)
+        self.send_header("Content-Length", str(len(r.cuerpo)))
+        for k, v in r.cabeceras:
+            self.send_header(k, v)
+        for c in r.cookies:
+            self.send_header("Set-Cookie", c)
+        self.end_headers()
+        self.wfile.write(r.cuerpo)
+    return metodo
