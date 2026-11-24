@@ -1,5 +1,7 @@
 # Compartir una plantilla
 
+> **La forma más rápida:** en la app, Biblioteca → **Compartir en la comunidad**. Prepara el archivo y la captura y abre [la página de envío](https://reproductor-comunidad.vercel.app/enviar): entras con GitHub, eliges los dos archivos y esperas la revisión. Lo de abajo es la otra vía, por pull request.
+
 ## 1. Exporta desde la app
 
 - **Una plantilla hecha en el Editor:** en la Biblioteca, elígela y toca **Exportar**.
