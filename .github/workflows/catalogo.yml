@@ -1,0 +1,32 @@
+name: Actualizar catálogo
+on:
+  push:
+    branches: [main]
+    paths:
+      - "entradas/**"
+      - "plantillas/**"
+      - "previas/**"
+jobs:
+  catalogo:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: Noull999/reproductor-visual
+          path: app
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - run: python herramientas/construir.py app
+      - name: Guardar el catálogo si cambió
+        run: |
+          git config user.name "catalogo-bot"
+          git config user.email "catalogo-bot@users.noreply.github.com"
+          git add catalogo.json
+          git diff --cached --quiet || (git commit -m "Catálogo actualizado" && git push)

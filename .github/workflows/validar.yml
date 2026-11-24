@@ -1,0 +1,31 @@
+name: Validar envíos
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: Noull999/reproductor-visual
+          path: app
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - name: Un envío solo toca las carpetas de plantillas
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --name-only "origin/${{ github.base_ref }}...HEAD" | while read -r f; do
+            [ -z "$f" ] && continue
+            echo "$f" | grep -Eq '^(entradas/[a-z0-9-]+\.json|plantillas/[a-z0-9-]+\.plantilla|previas/[a-z0-9-]+\.webp)$' || { echo "✗ $f: un envío solo agrega archivos en entradas/, plantillas/ y previas/"; exit 1; }
+          done
+      - name: Validar con los mismos revisores de la app
+        run: python herramientas/validar.py app
