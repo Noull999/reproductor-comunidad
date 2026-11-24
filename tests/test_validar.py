@@ -57,3 +57,46 @@ def test_vista_previa_mala(raiz):
     assert any("16:9" in e for e in problemas(raiz))
     (raiz / "previas" / "ambiente-menta.webp").write_bytes(b"no es imagen")
     assert any("no es una imagen" in e for e in problemas(raiz))
+
+
+# ---- origen de las imágenes ----
+def con_imagen(raiz, imagenes=None, slug="con-fondo"):
+    """Agrega un envío cuyo archivo trae un fondo propio; `imagenes` es lo que declara la entrada."""
+    ajustes, _ = validar.cargar_app(APP)
+    origen = raiz / "_origen"
+    origen.mkdir(exist_ok=True)
+    Image.new("RGB", (64, 36), (10, 90, 200)).save(origen / "liquido-fondo.webp", "WEBP")
+    datos = {"plantilla": "liquido", "variante": {}, "props": {"fondo": "/imagen?n=liquido-fondo.webp&v=1"}}
+    (raiz / "plantillas" / f"{slug}.plantilla").write_bytes(ajustes.empaquetar(json.dumps(datos), origen))
+    shutil.copy(raiz / "previas" / "ambiente-menta.webp", raiz / "previas" / f"{slug}.webp")
+    entrada = {"nombre": "Con fondo", "autor": "Ana", "descripcion": "Trae una imagen."}
+    if imagenes is not None:
+        entrada["imagenes"] = imagenes
+    (raiz / "entradas" / f"{slug}.json").write_text(json.dumps(entrada), encoding="utf-8")
+    return validar.revisar(raiz, APP)
+
+
+def test_imagenes_sin_declarar(raiz):
+    errores, _ = con_imagen(raiz)
+    assert any("falta declarar" in e for e in errores)
+
+
+@pytest.mark.parametrize("imagenes", [{"origen": "propio"}, {"origen": "ia", "detalle": "Higgsfield"}, {"origen": "libre", "detalle": "CC0 · pexels.com"}])
+def test_imagenes_declaradas(raiz, imagenes):
+    errores, registros = con_imagen(raiz, imagenes)
+    assert errores == []
+    assert [r for r in registros if r["id"] == "con-fondo"][0]["imagenes"]["origen"] == imagenes["origen"]
+
+
+@pytest.mark.parametrize("imagenes", [{"origen": "libre"}, {"origen": "ia", "detalle": "  "}, {"origen": "robado"}, {"origen": "propio", "x": 1}, "propio", {"origen": "propio", "detalle": "a" * 200}])
+def test_declaracion_mala(raiz, imagenes):
+    errores, _ = con_imagen(raiz, imagenes)
+    assert errores
+
+
+def test_declarar_imagenes_donde_no_hay(raiz):
+    f = raiz / "entradas" / "ambiente-menta.json"
+    e = json.loads(f.read_text(encoding="utf-8"))
+    e["imagenes"] = {"origen": "propio"}
+    f.write_text(json.dumps(e), encoding="utf-8")
+    assert any("no trae ninguna" in x for x in problemas(raiz))

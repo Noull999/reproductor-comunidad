@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,6 +26,8 @@ jobs:
           python-version: "3.12"
       - run: pip install pillow
       - run: python herramientas/construir.py app
+        env:
+          GH_TOKEN: ${{ github.token }}
       - run: python herramientas/sitio.py
       - name: Guardar el catálogo y la galería si cambiaron
         run: |

@@ -49,9 +49,9 @@ PLANTILLA = """<!DOCTYPE html>
   .tarjeta img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #120a0c; }
   .cuerpo { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
   .cuerpo h2 { margin: 0; font-size: 18px; }
-  .autor { color: var(--suave); font-size: 13.5px; }
+  .autor { color: var(--suave); font-size: 13.5px; } .autor a { color: inherit; }
   .cuerpo p { margin: 0; color: var(--suave); font-size: 14.5px; flex: 1; }
-  .pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .pie { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; } .pie .descargar { margin-left: auto; }
   .etiqueta { font: 12px ui-monospace, "Cascadia Mono", monospace; color: var(--suave); border: 1px solid var(--borde); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
   .descargar { padding: 8px 18px; border-radius: 999px; background: var(--acento); color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; }
   .descargar:hover { filter: brightness(1.1); }
@@ -111,14 +111,32 @@ for (const b of document.querySelectorAll(".filtros button")) b.addEventListener
 """
 
 
+ORIGENES = {"propio": "propias", "ia": "hechas con IA", "libre": "de licencia libre"}
+
+
+def autor_html(p):
+    """«por Ana · @ana»: el nombre que eligió y, si GitHub lo verificó, su usuario."""
+    e = html.escape
+    gh = f' · <a href="https://github.com/{e(p["github"])}" rel="noopener">@{e(p["github"])}</a>' if p.get("github") else ""
+    return f'por {e(p["autor"])}{gh}'
+
+
+def origen_html(p):
+    im = p.get("imagenes")
+    if not im:
+        return ""
+    e = html.escape
+    return f'<span class="etiqueta" title="{e(im.get("detalle", ""))}">Imágenes {e(ORIGENES.get(im.get("origen"), ""))}</span>'
+
+
 def tarjeta(p):
     e = html.escape
     etiqueta = f"Ajustes · {NOMBRES.get(p['base'], p['base'])}" if p["tipo"] == "ajustes" else "Plantilla del Editor"
     texto = f"{p['nombre']} {p['autor']} {p['descripcion']} {NOMBRES.get(p['base'], '')}".lower()
     return (f'    <li><article class="tarjeta" data-tipo="{e(p["tipo"])}" data-texto="{e(texto)}">\n'
             f'      <img src="previas/{e(p["id"])}.webp" alt="Vista previa de {e(p["nombre"])}" loading="lazy" width="1000" height="563">\n'
-            f'      <div class="cuerpo"><h2>{e(p["nombre"])}</h2><span class="autor">por {e(p["autor"])}</span><p>{e(p["descripcion"])}</p>\n'
-            f'      <div class="pie"><span class="etiqueta">{e(etiqueta)}</span>'
+            f'      <div class="cuerpo"><h2>{e(p["nombre"])}</h2><span class="autor">{autor_html(p)}</span><p>{e(p["descripcion"])}</p>\n'
+            f'      <div class="pie"><span class="etiqueta">{e(etiqueta)}</span>{origen_html(p)}'
             f'<a class="descargar" href="plantillas/{e(p["id"])}.plantilla" download>Descargar</a></div></div>\n'
             f'    </article></li>')
 
