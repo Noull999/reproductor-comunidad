@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comunidad · Reproductor visual</title>
+<meta name="description" content="Reproductor visual convierte tu música en pantallas animadas que reaccionan al sonido. Aquí la comunidad comparte plantillas y ajustes para instalar en un clic.">
+<meta property="og:title" content="Reproductor visual · Comunidad">
+<meta property="og:description" content="Pantallas animadas para tu música, y las plantillas que comparte la gente.">
+<meta property="og:image" content="img/incluidas/neoy2k.webp">
+<style>
+  :root { --fondo: #0b0809; --panel: rgba(255,255,255,.05); --texto: #f4eff0; --suave: #b0a3a6; --borde: rgba(255,255,255,.12); --acento: #ff3b4d; --acento2: #7a8cff; color-scheme: dark; }
+  @media (prefers-color-scheme: light) { :root { --fondo: #f7f2f2; --panel: rgba(0,0,0,.04); --texto: #1d1517; --suave: #66585c; --borde: rgba(0,0,0,.14); color-scheme: light; } }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 4px; }
+  .saltar { position: absolute; left: -999px; top: 8px; background: var(--acento); color: #fff; padding: 8px 14px; border-radius: 8px; z-index: 50; } .saltar:focus { left: 8px; }
+  .caja { max-width: 1120px; margin: 0 auto; padding: 0 22px; }
+  /* barra superior */
+  .barra-sup { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(14px); background: color-mix(in srgb, var(--fondo) 80%, transparent); border-bottom: 1px solid var(--borde); }
+  .barra-sup .caja { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 58px; }
+  .marca { font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 10px; } .marca i { width: 10px; height: 10px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 12px var(--acento); }
+  nav ul { display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; justify-content: flex-end; }
+  nav a { padding: 7px 13px; border-radius: 999px; text-decoration: none; color: var(--suave); font-size: 14.5px; } nav a:hover { color: var(--texto); background: var(--panel); }
+  /* portada */
+  .portada { padding: 70px 0 40px; background: radial-gradient(900px 480px at 12% -10%, rgba(255,59,77,.22), transparent 62%), radial-gradient(800px 460px at 100% 10%, rgba(122,140,255,.2), transparent 60%); }
+  .portada .caja { display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
+  @media (max-width: 860px) { .portada .caja { grid-template-columns: 1fr; } }
+  h1 { font-size: clamp(34px, 5.4vw, 58px); line-height: 1.05; margin: 0 0 16px; letter-spacing: -.03em; }
+  h1 em { font-style: normal; background: linear-gradient(90deg, var(--acento), var(--acento2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .portada p { font-size: 18px; color: var(--suave); margin: 0 0 22px; max-width: 560px; }
+  .botones { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 15px; border: 1px solid var(--borde); }
+  .btn.primario { background: var(--acento); border-color: transparent; color: #fff; } .btn:hover { filter: brightness(1.12); }
+  .pila { position: relative; aspect-ratio: 16 / 11; }
+  .pila img { position: absolute; width: 74%; border-radius: 14px; border: 1px solid var(--borde); box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .pila img:nth-child(1) { left: 0; top: 0; transform: rotate(-4deg); } .pila img:nth-child(2) { right: 0; top: 14%; transform: rotate(3deg); } .pila img:nth-child(3) { left: 12%; bottom: 0; transform: rotate(-1.5deg); }
+  /* secciones */
+  section.caja { padding: 56px 22px 8px; }
+  h2 { font-size: clamp(25px, 3.4vw, 34px); margin: 0 0 8px; letter-spacing: -.02em; }
+  .sub { color: var(--suave); margin: 0 0 26px; max-width: 700px; }
+  .tres { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .nota { border: 1px solid var(--borde); background: var(--panel); border-radius: 18px; padding: 20px 22px; }
+  .nota h3 { margin: 0 0 6px; font-size: 18px; } .nota p { margin: 0; color: var(--suave); font-size: 15px; }
+  .nota .num { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--acento); color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
+  /* las 9 de la app */
+  .nueve { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0; }
+  .nueve li { border: 1px solid var(--borde); border-radius: 16px; overflow: hidden; background: var(--panel); }
+  .nueve img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  .nueve div { padding: 10px 14px 14px; } .nueve b { display: block; } .nueve span { color: var(--suave); font-size: 14px; }
+  /* comunidad */
+  .herramientas { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 18px; }
+  .herramientas input { flex: 1; min-width: 220px; max-width: 380px; padding: 11px 18px; border-radius: 999px; border: 1px solid var(--borde); background: var(--panel); color: var(--texto); font: inherit; }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .chips button { padding: 7px 14px; border-radius: 999px; border: 1px solid var(--borde); background: transparent; color: var(--suave); font: inherit; font-size: 14px; cursor: pointer; }
+  .chips button[aria-pressed="true"] { background: var(--texto); color: var(--fondo); border-color: transparent; }
+  .rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; list-style: none; padding: 0; margin: 0; }
+  .tarjeta { border: 1px solid var(--borde); border-radius: 18px; overflow: hidden; background: var(--panel); display: flex; flex-direction: column; height: 100%; }
+  .tarjeta button.foto { all: unset; cursor: zoom-in; display: block; } .tarjeta .foto:focus-visible { outline: 2px solid var(--acento); outline-offset: -3px; }
+  .tarjeta img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #120a0c; }
+  .cuerpo { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .cuerpo h3 { margin: 0; font-size: 18px; } .autor { color: var(--suave); font-size: 13.5px; } .autor a { text-decoration-color: var(--borde); }
+  .cuerpo p { margin: 0; color: var(--suave); font-size: 14.5px; flex: 1; }
+  .pie { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .etiqueta { font: 12px ui-monospace, "Cascadia Mono", monospace; color: var(--suave); border: 1px solid var(--borde); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .descargar { margin-left: auto; padding: 8px 18px; border-radius: 999px; background: var(--acento); color: #fff; text-decoration: none; font-weight: 600; font-size: 14px; } .descargar:hover { filter: brightness(1.12); }
+  #vacio { border: 1px dashed var(--borde); border-radius: 18px; padding: 34px 20px; text-align: center; color: var(--suave); }
+  /* preguntas */
+  details { border: 1px solid var(--borde); border-radius: 14px; background: var(--panel); padding: 4px 18px; margin-bottom: 10px; }
+  summary { cursor: pointer; padding: 12px 0; font-weight: 600; } details p { margin: 0 0 14px; color: var(--suave); } details code { font: 13px ui-monospace, monospace; background: var(--panel); padding: 1px 6px; border-radius: 6px; }
+  footer { margin-top: 50px; padding: 26px 0 50px; border-top: 1px solid var(--borde); color: var(--suave); font-size: 14px; }
+  footer .caja { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; } footer a { color: var(--texto); }
+  dialog { border: 1px solid var(--borde); border-radius: 16px; background: var(--fondo); color: var(--texto); padding: 10px; max-width: min(1000px, 94vw); } dialog::backdrop { background: rgba(0,0,0,.7); }
+  dialog img { width: 100%; height: auto; border-radius: 10px; display: block; } dialog p { margin: 10px 4px 2px; color: var(--suave); text-align: center; } dialog form { text-align: right; } dialog button { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--borde); background: transparent; color: var(--texto); cursor: pointer; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<a class="saltar" href="#plantillas">Saltar a las plantillas</a>
+<header class="barra-sup">
+  <div class="caja">
+    <a class="marca" href="#"><i aria-hidden="true"></i>Reproductor visual · Comunidad</a>
+    <nav aria-label="Secciones"><ul>
+      <li><a href="#que-es">Qué es</a></li><li><a href="#plantillas">Plantillas</a></li><li><a href="#instalar">Instalar</a></li><li><a href="#compartir">Compartir</a></li><li><a href="#preguntas">Preguntas</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <div class="portada">
+    <div class="caja">
+      <div>
+        <h1>Tu música, con la <em>pantalla que tú elijas</em></h1>
+        <p>Reproductor visual es una app para Windows que convierte lo que escuchas en pantallas animadas que reaccionan al sonido: el bajo, los medios y los agudos. Aquí la comunidad comparte plantillas y ajustes para instalar en un clic.</p>
+        <div class="botones">
+          <a class="btn primario" href="#plantillas">Ver las plantillas</a>
+          <a class="btn" href="__APP__">Ver la app en GitHub</a>
+        </div>
+      </div>
+      <div class="pila" aria-hidden="true">
+        <img src="img/incluidas/neoy2k.webp" alt=""><img src="img/incluidas/dreamcore.webp" alt=""><img src="img/incluidas/liquido.webp" alt="">
+      </div>
+    </div>
+  </div>
+
+  <section id="que-es" class="caja" aria-labelledby="t-que">
+    <h2 id="t-que">¿Qué es esto?</h2>
+    <p class="sub">Tres piezas que conviene distinguir.</p>
+    <div class="tres">
+      <div class="nota"><h3>La app</h3><p>Reproduce tu música (Spotify, SoundCloud, tus carpetas o lo que suene en el PC) y la muestra con una pantalla animada. Trae 9 plantillas. Por ahora se instala desde GitHub y necesita Python; un instalador está en camino.</p></div>
+      <div class="nota"><h3>Una plantilla</h3><p>Es el estilo de la pantalla. Hay dos tipos: los <b>ajustes</b> de una de las 9 de la app (tu color, tu fondo, la velocidad…) y las <b>plantillas del Editor</b>, hechas desde cero arrastrando piezas.</p></div>
+      <div class="nota"><h3>La comunidad</h3><p>Personas que comparten las suyas. Cada envío se revisa antes de publicarse, queda ligado al usuario de GitHub de quien lo subió y dice de dónde vienen sus imágenes.</p></div>
+    </div>
+  </section>
+
+  <section id="incluidas" class="caja" aria-labelledby="t-inc">
+    <h2 id="t-inc">Las 9 plantillas de la app</h2>
+    <p class="sub">Los ajustes que ves abajo se aplican sobre alguna de estas.</p>
+    <ul class="nueve">
+__INCLUIDAS__
+    </ul>
+  </section>
+
+  <section id="plantillas" class="caja" aria-labelledby="t-com">
+    <h2 id="t-com">Plantillas de la comunidad</h2>
+    <p class="sub">__CUENTA__ por ahora. Toca la imagen para verla grande; <b>Descargar</b> te da el archivo para importarlo en la app.</p>
+    <div class="herramientas">
+      <input id="buscar" type="search" placeholder="Buscar por nombre, autor o estilo…" aria-label="Buscar plantillas" autocomplete="off">
+      <div class="chips" role="group" aria-label="Filtrar por plantilla" id="filtros">
+        <button type="button" data-f="" aria-pressed="true">Todas</button>
+__FILTROS__
+      </div>
+    </div>
+    <ul class="rejilla" id="rejilla">
+__TARJETAS__
+    </ul>
+    <div id="vacio" hidden>__VACIO__</div>
+  </section>
+
+  <section id="instalar" class="caja" aria-labelledby="t-ins">
+    <h2 id="t-ins">Cómo instalar una</h2>
+    <div class="tres">
+      <div class="nota"><span class="num">1</span><h3>Descárgala</h3><p>Toca <b>Descargar</b> en la plantilla que te guste. Te baja un archivo <code>.plantilla</code>.</p></div>
+      <div class="nota"><span class="num">2</span><h3>Impórtala en la app</h3><p>Abre la <b>Biblioteca</b> y toca <b>Importar plantilla…</b>. Elige el archivo: la app lo revisa entero antes de usarlo.</p></div>
+      <div class="nota"><span class="num">3</span><h3>Listo</h3><p>Queda elegida en la Biblioteca. Más fácil aún: la pestaña <b>Comunidad</b> de la app las instala directo, sin descargar nada.</p></div>
+    </div>
+  </section>
+
+  <section id="compartir" class="caja" aria-labelledby="t-cmp">
+    <h2 id="t-cmp">Cómo compartir la tuya</h2>
+    <p class="sub">Hoy se hace con una cuenta de GitHub (gratis). Una subida más simple, directo en esta página, está en camino.</p>
+    <div class="tres">
+      <div class="nota"><span class="num">1</span><h3>Exporta</h3><p>En la app: <b>Exportar</b> (plantillas del Editor) o <b>Exportar mis ajustes</b> (las incluidas).</p></div>
+      <div class="nota"><span class="num">2</span><h3>Agrega tres archivos</h3><p>Tu archivo, una captura de la vista previa y una entrada con nombre y descripción. Si trae imágenes, dices de dónde vienen.</p></div>
+      <div class="nota"><span class="num">3</span><h3>Abre un pull request</h3><p>Un revisor automático lo comprueba y después lo apruebo. Tu usuario de GitHub queda como autor verificado.</p></div>
+    </div>
+    <p style="margin-top:18px"><a class="btn primario" href="__GITHUB__/blob/main/CONTRIBUIR.md">Leer la guía completa</a></p>
+  </section>
+
+  <section id="preguntas" class="caja" aria-labelledby="t-pre">
+    <h2 id="t-pre">Preguntas frecuentes</h2>
+    <details><summary>¿Es seguro instalar una plantilla de otra persona?</summary><p>Una plantilla son solo datos e imágenes, no programas: no puede ejecutar nada. La app la revisa campo por campo antes de usarla, vuelve a guardar las imágenes (nunca las copia tal cual) y rechaza archivos con contenido raro o demasiado grande. Además, cada envío se revisa a mano antes de publicarse.</p></details>
+    <details><summary>¿Qué lleva una plantilla? ¿Lleva mis cuentas?</summary><p>No. Lleva el estilo elegido, el color, la velocidad y, si las pusiste, tus imágenes. Nunca tus cuentas de Spotify o SoundCloud, ni nombres de canciones.</p></details>
+    <details><summary>¿Cómo sé quién la hizo?</summary><p>Cada tarjeta muestra el nombre del autor y, junto a él, su usuario de GitHub (@usuario), que es el de la cuenta que la envió y no se puede falsificar.</p></details>
+    <details><summary>¿De dónde vienen los fondos e imágenes?</summary><p>Quien envía una plantilla con imágenes debe declarar su origen: <b>propias</b>, <b>hechas con IA</b> (y con qué herramienta) o de <b>licencia libre</b> (con la fuente). Se muestra en la tarjeta. Si alguien reclama derechos sobre una imagen, la plantilla se retira.</p></details>
+    <details><summary>¿Necesito una cuenta para instalar?</summary><p>No. Solo para compartir (hoy, una cuenta de GitHub).</p></details>
+    <details><summary>¿La app es gratis? ¿Funciona en Mac o Linux?</summary><p>El código es abierto (licencia MIT) y se puede usar gratis. Por ahora solo funciona en Windows 10/11.</p></details>
+  </section>
+</main>
+
+<footer>
+  <div class="caja">
+    <span>__CUENTA__ en la comunidad</span>
+    <a href="__GITHUB__">Repositorio de la comunidad</a>
+    <a href="__APP__">La app</a>
+    <a href="__GITHUB__/blob/main/CONTRIBUIR.md">Compartir la tuya</a>
+  </div>
+</footer>
+
+<dialog id="visor" aria-label="Vista ampliada"><form method="dialog"><button>Cerrar</button></form><img id="visor-img" alt=""><p id="visor-txt"></p></dialog>
+<script>
+const tarjetas = [...document.querySelectorAll(".tarjeta")], vacio = document.getElementById("vacio");
+let base = "";
+function filtrar() {
+  const q = document.getElementById("buscar").value.trim().toLowerCase();
+  let n = 0;
+  for (const t of tarjetas) { const ok = (!base || t.dataset.base === base) && (!q || t.dataset.texto.includes(q)); t.parentElement.hidden = !ok; if (ok) n++; }
+  vacio.hidden = n > 0 || !tarjetas.length ? true : false;
+  if (!n && tarjetas.length) { vacio.hidden = false; vacio.textContent = "Nada coincide con esa búsqueda."; }
+  if (!tarjetas.length) vacio.hidden = false;
+}
+document.getElementById("buscar").addEventListener("input", filtrar);
+for (const b of document.querySelectorAll("#filtros button")) b.addEventListener("click", () => {
+  base = b.dataset.f; document.querySelectorAll("#filtros button").forEach(x => x.setAttribute("aria-pressed", x === b)); filtrar();
+});
+const visor = document.getElementById("visor");
+for (const f of document.querySelectorAll(".foto")) f.addEventListener("click", () => {
+  document.getElementById("visor-img").src = f.querySelector("img").src; document.getElementById("visor-txt").textContent = f.dataset.titulo; visor.showModal();
+});
+visor.addEventListener("click", (e) => { if (e.target === visor) visor.close(); });
+filtrar();
+</script>
+</body>
+</html>
