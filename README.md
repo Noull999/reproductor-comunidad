@@ -6,7 +6,7 @@ Plantillas que la gente comparte para [reproductor-visual](https://github.com/No
 
 ## Para qué plantillas se comparte
 
-La app trae 9 plantillas. Lo que se comparte aquí son tus **ajustes** de ellas (tu color, tu fondo, tu cuerpo propio…) o plantillas enteras que armaste en el **Editor**.
+La app trae 12 plantillas. Lo que se comparte aquí son tus **ajustes** de ellas (tu color, tu fondo, tu cuerpo propio…) o plantillas enteras que armaste en el **Editor**.
 
 <table>
 <tr>

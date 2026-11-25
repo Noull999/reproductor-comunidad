@@ -12,7 +12,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 GITHUB = "https://github.com/Noull999/reproductor-comunidad"
 APP = "https://github.com/Noull999/reproductor-visual"
 ORIGENES = {"propio": "propias", "ia": "hechas con IA", "libre": "de licencia libre"}
-# Las 9 plantillas de la app: id, nombre y una frase (la foto está en assets/incluidas/<id>.webp)
+# Las 12 plantillas de la app: id, nombre y una frase (la foto está en assets/incluidas/<id>.webp)
 INCLUIDAS = [
     ("liquido", "Líquido", "Vidrio líquido sobre un haz de luz que late con el bajo."),
     ("headspace", "Headspace", "Una cabeza Y2K con el reproductor adentro."),
@@ -23,6 +23,9 @@ INCLUIDAS = [
     ("psicodelico", "Psicodélico", "Un ojo pixel art sobre un caleidoscopio."),
     ("neoy2k", "Neo Y2K", "Portada de rap con cromo, destellos y japonés vertical."),
     ("dreamcore", "Dreamcore", "VHS, ventanas de Windows 95 y popups de «virus»."),
+    ("aero", "Frutiger Aero", "Colinas o agua de los 2000, burbujas y pompas que revientas."),
+    ("cromo", "Cromo líquido", "Metal derretido que se sacude con cada bombo."),
+    ("ascii", "ASCII", "Terminal, psicodélico o arcade, hecho de letras; también tu imagen o video."),
 ]
 NOMBRES = {i: n for i, n, _ in INCLUIDAS}
 
