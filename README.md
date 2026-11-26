@@ -1,4 +1,4 @@
-# Comunidad del reproductor visual
+# Comunidad de Sonix2K
 
 Plantillas que la gente comparte para [reproductor-visual](https://github.com/Noull999/reproductor-visual), la app que pone pantallas que reaccionan a tu música: colores, fondos, plantillas hechas en el Editor y ajustes de las incluidas.
 
